@@ -527,4 +527,885 @@ function generateAIChatBot() {
             display: none;
             padding: 12px 16px;
             background: white;
-            border: 1px solid #e
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            align-self: flex-end;
+            width: fit-content;
+            margin-bottom: 10px;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* منطقة الإدخال */
+        .chat-input {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: right;
+        }
+        
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+        
+        .chat-input button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-input button:hover {
+            background: #5a67d8;
+        }
+        
+        .chat-input button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        /* زر إدارة البوت */
+        .admin-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            z-index: 1;
+        }
+        
+        .admin-btn:hover {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        /* نافذة الإدارة */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .admin-panel.active {
+            display: flex;
+        }
+        
+        .admin-modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: modalAppear 0.3s ease-out;
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+        
+        .admin-body form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .admin-body input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        .admin-body input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .admin-body textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .admin-body textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+        
+        .btn-secondary {
+            background: #9ca3af;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #6b7280;
+        }
+        
+        /* تنبيهات */
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        /* استجابة للجوال */
+        @media (max-width: 640px) {
+            .chatbot-container {
+                width: 95vw;
+                height: 70vh;
+                left: 2.5vw;
+                right: 2.5vw;
+            }
+            
+            .chatbot-toggle {
+                left: 20px;
+                bottom: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .admin-modal {
+                max-width: 95vw;
+                max-height: 95vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- زر البوت العائم -->
+    <button class="chatbot-toggle" id="chatToggle">
+        <i class="fas fa-robot" id="toggleIcon"></i>
+    </button>
+    
+    <!-- زر إدارة البوت -->
+    <button class="admin-btn" id="adminBtn" title="إدارة البوت">
+        <i class="fas fa-cog"></i>
+    </button>
+    
+    <!-- نافذة البوت -->
+    <div class="chatbot-container" id="chatbot">
+        <div class="chat-header">
+            <h3>${botName}</h3>
+            <button class="close-btn" id="closeChat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message" id="welcomeMessage">
+                مرحباً! أنا ${botName}، مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." autocomplete="off">
+            <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+    <!-- نافذة الإدارة -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-modal">
+            <div class="admin-header">
+                <h3>إدارة البوت</h3>
+                <button class="close-btn" id="closeAdmin">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="admin-body">
+                <div class="alert" id="adminAlert"></div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="admin@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="loginPassword" placeholder="********" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                </form>
+                
+                <form id="manageForm" style="display: none;">
+                    <div class="form-group">
+                        <label>إضافة معلومات جديدة</label>
+                        <textarea id="newInfo" placeholder="أضف معلومات جديدة للبوت..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>أو ربط موقع جديد</label>
+                        <input type="url" id="newWebsite" placeholder="https://example.com">
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="addNewInfo()" class="btn btn-primary flex-1">إضافة معلومات</button>
+                        <button type="button" onclick="resetBot()" class="btn btn-secondary">إعادة تعيين</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== البيانات الأساسية =====
+        const BOT_DATA = "${encodedData}";
+        const BOT_ID = "${botId}";
+        const BOT_CONFIG = {
+            name: "${botName}",
+            source: "${botData.sourceType}",
+            content: \`${botData.content.replace(/`/g, '\\`').substring(0, 30000)}\`
+        };
+        
+        // ===== متغيرات النظام =====
+        let chatHistory = [];
+        let isProcessing = false;
+        let isAdminLoggedIn = false;
+        
+        // ===== تهيئة البوت =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // عناصر DOM
+            const chatToggle = document.getElementById('chatToggle');
+            const chatbot = document.getElementById('chatbot');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const closeChat = document.getElementById('closeChat');
+            const chatMessages = document.getElementById('chatMessages');
+            const userInput = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const adminBtn = document.getElementById('adminBtn');
+            const adminPanel = document.getElementById('adminPanel');
+            const closeAdmin = document.getElementById('closeAdmin');
+            const loginForm = document.getElementById('loginForm');
+            const manageForm = document.getElementById('manageForm');
+            const adminAlert = document.getElementById('adminAlert');
+            
+            // ===== إدارة فتح/إغلاق البوت =====
+            chatToggle.addEventListener('click', toggleChat);
+            closeChat.addEventListener('click', closeChat);
+            
+            function toggleChat() {
+                if (chatbot.classList.contains('active')) {
+                    closeChat();
+                } else {
+                    openChat();
+                }
+            }
+            
+            function openChat() {
+                chatbot.classList.add('active');
+                chatToggle.classList.add('active');
+                toggleIcon.className = 'fas fa-times';
+                userInput.focus();
+            }
+            
+            function closeChat() {
+                chatbot.classList.remove('active');
+                chatToggle.classList.remove('active');
+                toggleIcon.className = 'fas fa-robot';
+            }
+            
+            // ===== معالجة الأسئلة =====
+            sendButton.addEventListener('click', processQuestion);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    processQuestion();
+                }
+            });
+            
+            async function processQuestion() {
+                const question = userInput.value.trim();
+                if (!question || isProcessing) return;
+                
+                // إضافة سؤال المستخدم
+                addMessage(question, 'user');
+                userInput.value = '';
+                userInput.disabled = true;
+                sendButton.disabled = true;
+                isProcessing = true;
+                
+                // عرض مؤشر الكتابة
+                typingIndicator.style.display = 'flex';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                try {
+                    // محاكاة معالجة الذكاء الاصطناعي
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // البحث عن الإجابة
+                    const answer = await findAIAnswer(question);
+                    
+                    // إضافة الإجابة
+                    hideTypingIndicator();
+                    addMessage(answer, 'bot');
+                    
+                    // حفظ في السجل
+                    chatHistory.push({
+                        question: question,
+                        answer: answer,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    hideTypingIndicator();
+                    addMessage('عذراً، حدث خطأ في المعالجة. الرجاء المحاولة مرة أخرى.', 'bot');
+                } finally {
+                    userInput.disabled = false;
+                    sendButton.disabled = false;
+                    isProcessing = false;
+                    userInput.focus();
+                }
+            }
+            
+            // ===== البحث الذكي عن الإجابة =====
+            async function findAIAnswer(question) {
+                // استخراج الكلمات المفتاحية
+                const keywords = extractKeywords(question);
+                
+                // البحث في المحتوى
+                const relevantParts = searchInContent(question, keywords);
+                
+                if (relevantParts.length > 0) {
+                    // دمج أفضل الأجزاء مع نص طبيعي
+                    return generateNaturalResponse(relevantParts, question);
+                }
+                
+                // إذا لم يتم العثور على إجابة مباشرة
+                return generateFallbackResponse(question);
+            }
+            
+            function extractKeywords(text) {
+                const stopWords = ['ما', 'هل', 'كيف', 'متى', 'أين', 'لماذا', 'من', 'هل', 'the', 'is', 'are', 'how', 'what', 'when', 'where', 'why'];
+                const words = text.toLowerCase()
+                    .replace(/[^\w\\s]/g, '')
+                    .split(/\\s+/)
+                    .filter(word => word.length > 2 && !stopWords.includes(word));
+                return [...new Set(words)];
+            }
+            
+            function searchInContent(question, keywords) {
+                const content = BOT_CONFIG.content.toLowerCase();
+                const questionLower = question.toLowerCase();
+                const results = [];
+                
+                // البحث عن مطابقات مباشرة
+                if (content.includes(questionLower.substring(0, 20))) {
+                    const startIndex = content.indexOf(questionLower.substring(0, 20));
+                    const relevantText = extractContext(content, startIndex);
+                    if (relevantText) results.push(relevantText);
+                }
+                
+                // البحث بالكلمات المفتاحية
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(\`[^.!?]*\${keyword}[^.!?]*[.!?]\`, 'gi');
+                    const matches = content.match(regex);
+                    if (matches) {
+                        matches.forEach(match => {
+                            if (match.length > 20 && match.length < 300) {
+                                results.push(match.trim());
+                            }
+                        });
+                    }
+                });
+                
+                // البحث عن أرقام الهواتف والعناوين
+                const phoneRegex = /(\\+?\\d[\\d\\s\\-\\(\\)]{8,}\\d)/g;
+                const phoneMatches = content.match(phoneRegex);
+                if (phoneMatches && (questionLower.includes('هاتف') || questionLower.includes('اتصل') || questionLower.includes('رقم') || questionLower.includes('phone') || questionLower.includes('call'))) {
+                    phoneMatches.forEach(phone => results.push(\`رقم الهاتف: \${phone}\`));
+                }
+                
+                const emailRegex = /[\\w\\.-]+@[\\w\\.-]+\\.\\w+/g;
+                const emailMatches = content.match(emailRegex);
+                if (emailMatches && (questionLower.includes('بريد') || questionLower.includes('إيميل') || questionLower.includes('email') || questionLower.includes('contact'))) {
+                    emailMatches.forEach(email => results.push(\`البريد الإلكتروني: \${email}\`));
+                }
+                
+                return [...new Set(results)].slice(0, 5);
+            }
+            
+            function extractContext(text, index) {
+                const start = Math.max(0, index - 100);
+                const end = Math.min(text.length, index + 200);
+                let extracted = text.substring(start, end);
+                
+                // جعل الجمل كاملة
+                const firstPeriod = extracted.indexOf('.', 50);
+                const lastPeriod = extracted.lastIndexOf('.');
+                
+                if (firstPeriod !== -1 && lastPeriod !== -1 && lastPeriod > firstPeriod) {
+                    extracted = extracted.substring(firstPeriod + 1, lastPeriod + 1).trim();
+                }
+                
+                return extracted.length > 50 ? extracted : null;
+            }
+            
+            function generateNaturalResponse(parts, question) {
+                const responses = [
+                    \`بناءً على سؤالك "\${question}"، \${parts[0]}\`,
+                    \`\${parts[0]} هذا ما يمكنني إخبارك به عن سؤالك.\`,
+                    \`بالنسبة لسؤالك، \${parts[0]}\`,
+                    \`وفقاً للمعلومات المتاحة، \${parts[0]}\`
+                ];
+                
+                let response = responses[Math.floor(Math.random() * responses.length)];
+                
+                // إضافة معلومات إضافية إذا كانت متوفرة
+                if (parts.length > 1) {
+                    response += \` \\n\\nبالإضافة إلى ذلك، \${parts[1]}\`;
+                }
+                
+                // إضافة خاتمة
+                const closings = [
+                    'هل تحتاج إلى مزيد من المعلومات؟',
+                    'أتمنى أن أكون قد أجبت على سؤالك.',
+                    'هل هناك شيء آخر يمكنني مساعدتك به؟'
+                ];
+                
+                response += \` \\n\\n\${closings[Math.floor(Math.random() * closings.length)]}\`;
+                
+                return response;
+            }
+            
+            function generateFallbackResponse(question) {
+                const fallbacks = [
+                    \`عذراً، لم أجد معلومات محددة عن "\${question}" في قاعدة معرفتي الحالية. يمكنني مساعدتك في مواضيع أخرى.\`,
+                    \`للأسف، لا أملك معلومات كافية للإجابة على سؤالك عن "\${question}". يمكنك التواصل مع الدعم مباشرة.\`,
+                    \`سؤالك مهم، لكن المعلومات المتاحة لدي حالياً لا تغطي "\${question}". هل يمكنني مساعدتك في شيء آخر؟\`
+                ];
+                
+                return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+            }
+            
+            // ===== مساعدات الرسائل =====
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = \`message \${sender}-message\`;
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function hideTypingIndicator() {
+                typingIndicator.style.display = 'none';
+            }
+            
+            // ===== إدارة البوت =====
+            adminBtn.addEventListener('click', () => {
+                adminPanel.classList.add('active');
+            });
+            
+            closeAdmin.addEventListener('click', () => {
+                adminPanel.classList.remove('active');
+                resetAdminForms();
+            });
+            
+            // النقر خارج نافذة الإدارة للإغلاق
+            adminPanel.addEventListener('click', (e) => {
+                if (e.target === adminPanel) {
+                    adminPanel.classList.remove('active');
+                    resetAdminForms();
+                }
+            });
+            
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // التحقق من بيانات تسجيل الدخول
+                if (await verifyAdminCredentials(email, password)) {
+                    isAdminLoggedIn = true;
+                    loginForm.style.display = 'none';
+                    manageForm.style.display = 'flex';
+                    showAlert('تم تسجيل الدخول بنجاح! يمكنك الآن إدارة البوت.', 'success');
+                } else {
+                    showAlert('البريد الإلكتروني أو كلمة المرور غير صحيحة.', 'error');
+                }
+            });
+            
+            // ===== الوظائف المساعدة =====
+            async function verifyAdminCredentials(email, password) {
+                // في الواقع، ستتحقق من الخادم
+                // هنا محاكاة باستخدام localStorage
+                try {
+                    const storedHash = localStorage.getItem(\`bot_auth_\${BOT_ID}\`);
+                    if (storedHash) {
+                        const expectedHash = btoa(email + ':' + password + '_salt');
+                        return storedHash === expectedHash;
+                    }
+                } catch (error) {
+                    console.error('Auth error:', error);
+                }
+                return false;
+            }
+            
+            function showAlert(message, type) {
+                adminAlert.textContent = message;
+                adminAlert.className = \`alert alert-\${type}\`;
+                adminAlert.style.display = 'block';
+                
+                setTimeout(() => {
+                    adminAlert.style.display = 'none';
+                }, 5000);
+            }
+            
+            function resetAdminForms() {
+                loginForm.reset();
+                manageForm.reset();
+                loginForm.style.display = 'flex';
+                manageForm.style.display = 'none';
+                isAdminLoggedIn = false;
+                adminAlert.style.display = 'none';
+            }
+            
+            // ===== الوظائف العامة للنافذة =====
+            window.addNewInfo = async function() {
+                const newInfo = document.getElementById('newInfo').value.trim();
+                const newWebsite = document.getElementById('newWebsite').value.trim();
+                
+                if (!newInfo && !newWebsite) {
+                    showAlert('الرجاء إدخال معلومات جديدة أو رابط موقع.', 'error');
+                    return;
+                }
+                
+                // محاكاة إضافة المعلومات
+                showAlert('جاري تحديث معلومات البوت...', 'success');
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                if (newInfo) {
+                    BOT_CONFIG.content += '\\n\\n' + newInfo;
+                    showAlert('تمت إضافة المعلومات الجديدة بنجاح!', 'success');
+                }
+                
+                if (newWebsite) {
+                    showAlert(\`سيتم ربط الموقع \${newWebsite} في النسخة الكاملة.\`, 'success');
+                }
+                
+                document.getElementById('newInfo').value = '';
+                document.getElementById('newWebsite').value = '';
+            };
+            
+            window.resetBot = function() {
+                if (confirm('هل أنت متأكد من إعادة تعيين البوت؟ سيتم حذف جميع الإضافات.')) {
+                    BOT_CONFIG.content = \`${botData.content.substring(0, 30000)}\`;
+                    showAlert('تمت إعادة تعيين البوت إلى الإعدادات الأصلية.', 'success');
+                }
+            };
+            
+            // ===== تهيئة أولية =====
+            // إخفاء زر الإدارة للمستخدمين العاديين
+            adminBtn.style.display = 'none';
+            
+        });
+    </script>
+</body>
+</html>`;
+}
+
+// ================================
+// عرض قسم التحميل
+// ================================
+
+function showDownloadSection() {
+    const botContent = generateAIChatBot();
+    const blob = new Blob([botContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const fileName = `ai-chatbot-${Date.now()}.html`;
+    
+    const html = `
+        <section class="py-16 bg-gradient-to-b from-white to-green-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center bg-white rounded-2xl shadow-2xl p-8 max-w-3xl mx-auto">
+                    <div class="text-green-600 text-6xl mb-6">🚀</div>
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4">تهانينا! بوتك جاهز 🎉</h3>
+                    <p class="text-gray-600 text-lg mb-8">
+                        تم إنشاء بوتك الذكي بنجاح. يمكنك الآن تحميله ورفعه على موقعك.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <!-- معلومات البوت -->
+                        <div class="bg-blue-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-xl mb-4 text-blue-800">معلومات بوتك:</h4>
+                            <div class="space-y-3 text-right">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">اسم البوت:</span>
+                                    <span class="font-bold">${botData.botName}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">مصدر المعلومات:</span>
+                                    <span class="font-bold">${botData.sourceType === 'file' ? 'ملف مرفوع' : 'موقع ويب'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">البريد الإداري:</span>
+                                    <span class="font-bold">${botData.adminEmail}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- زر التحميل -->
+                        <div class="text-center">
+                            <a href="${url}" download="${fileName}" 
+                               class="btn-primary text-xl px-12 py-4 inline-block">
+                                <i class="fas fa-download ml-2"></i> تحميل ملف البوت
+                            </a>
+                            <p class="text-gray-500 text-sm mt-3">
+                                حجم الملف: ${(botContent.length / 1024).toFixed(1)} كيلوبايت
+                            </p>
+                        </div>
+                        
+                        <!-- التعليمات -->
+                        <div class="bg-yellow-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-xl mb-4 text-yellow-800">كيفية الاستخدام:</h4>
+                            <ol class="space-y-3 text-gray-700 text-right pr-6">
+                                <li><strong>1.</strong> حمّل ملف <code class="bg-gray-200 px-2 py-1 rounded">${fileName}</code></li>
+                                <li><strong>2.</strong> ارفعه على استضافة موقعك في المجلد الرئيسي</li>
+                                <li><strong>3.</strong> أضف هذا السطر في نهاية صفحات موقعك:<br>
+                                    <code class="bg-gray-800 text-white p-3 rounded block text-sm mt-2 text-left overflow-x-auto">
+                                        &lt;script src="/${fileName}" defer&gt;&lt;/script&gt;
+                                    </code>
+                                </li>
+                                <li><strong>4.</strong> سيظهر زر البوت في الزاوية اليسرى السفلية</li>
+                                <li><strong>5.</strong> لإدارة البوت، اضغط على زر الإعدادات ⚙️ داخل البوت</li>
+                            </ol>
+                        </div>
+                        
+                        <!-- ملاحظات مهمة -->
+                        <div class="bg-green-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-xl mb-4 text-green-800">ملاحظات مهمة:</h4>
+                            <ul class="space-y-2 text-right text-gray-700">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 ml-2"></i>
+                                    البوت يعمل <strong>بدون إنترنت</strong> بعد التحميل
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 ml-2"></i>
+                                    يمكن إضافة معلومات جديدة عبر <strong>واجهة الإدارة</strong>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 ml-2"></i>
+                                    <strong>لا يوجد</strong> رسوم شهرية أو اشتراكات
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 ml-2"></i>
+                                    يدعم <strong>العربية والإنجليزية</strong> تلقائياً
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- إنشاء بوت جديد -->
+                        <div class="text-center pt-6 border-t">
+                            <button onclick="location.reload()" class="btn-secondary px-8 py-3">
+                                <i class="fas fa-plus ml-2"></i> أنشئ بوتاً جديداً
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `;
+    
+    document.getElementById('downloadSection').innerHTML = html;
+    document.getElementById('downloadSection').classList.remove('hidden');
+    document.getElementById('downloadSection').scrollIntoView({ behavior: 'smooth' });
+    
+    // إخفاء الأقسام الأخرى
+    document.getElementById('builder').classList.add('hidden');
+    document.getElementById('accountSection').classList.add('hidden');
+}
+
+// ================================
+// دوال مساعدة
+// ================================
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ================================
+// تهيئة النظام
+// ================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // إضافة CSS للـ animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .dragover {
+            border-color: #667eea !important;
+            background-color: #f0f4ff !important;
+        }
+    `;
+    document.head.appendChild(style);
+});
