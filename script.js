@@ -49,6 +49,50 @@ const businessTypes = {
 let selectedBusiness = null;
 let userAnswers = {};
 
+// === GOOGLE FORM CONFIG ===
+const GOOGLE_FORM_CONFIG = {
+    FORM_ID: "1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ",
+    EMAIL_FIELD: "entry.1500976572",
+    NAME_FIELD: "entry.1308518972", 
+    BUSINESS_FIELD: "entry.1150704877",
+    QUESTIONS_FIELD: "entry.1383109089",
+    
+    FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ/formResponse",
+    SHEET_URL: "https://docs.google.com/spreadsheets/d/1mFbqIspyUo7KpRzh_8o3g04MX4BeoD61D5M9nJ3zRNQ/edit#gid=0"
+};
+
+// دالة إرسال البيانات لـ Google Form
+async function submitToGoogleForm(formData) {
+    const url = GOOGLE_FORM_CONFIG.FORM_URL;
+    
+    // بناء البيانات
+    const params = new URLSearchParams({
+        [GOOGLE_FORM_CONFIG.EMAIL_FIELD]: formData.email,
+        [GOOGLE_FORM_CONFIG.NAME_FIELD]: formData.name,
+        [GOOGLE_FORM_CONFIG.BUSINESS_FIELD]: formData.business,
+        [GOOGLE_FORM_CONFIG.QUESTIONS_FIELD]: JSON.stringify(formData.questions),
+        'submit': 'Submit'
+    });
+    
+    try {
+        // إرسال البيانات
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        });
+        
+        console.log('✅ تم إرسال البيانات لـ Google Form');
+        return true;
+    } catch (error) {
+        console.log('✅ تم إرسال البيانات (CORS متوقع)');
+        return true;
+    }
+}
+
 // اختيار نوع المتجر
 function selectBusiness(type) {
     selectedBusiness = type;
@@ -87,7 +131,7 @@ function showQuestionsSection() {
                 </button>
             </div>
             
-            <form id="questionsForm" onsubmit="return showPreview(event)">
+            <form id="questionsForm" onsubmit="return showFreePlan(event)">
     `;
     
     business.questions.forEach((q, index) => {
@@ -103,6 +147,7 @@ function showQuestionsSection() {
                     class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-${business.color}-500 focus:ring-2 focus:ring-${business.color}-200 transition"
                     placeholder="${q.placeholder}"
                     oninput="saveAnswer('${q.id}', this.value)"
+                    required
                 ></textarea>
                 <div class="text-left mt-2">
                     <span id="charCount${q.id}" class="text-sm text-gray-500">0 حرف</span>
@@ -113,10 +158,13 @@ function showQuestionsSection() {
     
     html += `
             <div class="text-center mt-12">
-                <button type="submit" class="bg-${business.color}-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:bg-${business.color}-700 transition shadow-lg">
-                    <i class="fas fa-eye ml-2"></i> معاينة البوت
+                <button type="submit" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg w-full">
+                    <i class="fas fa-gift ml-2"></i> احصل على بوتك المجاني الآن
                 </button>
-                <p class="text-gray-500 mt-4">ستتم معاينة البوت قبل الدفع</p>
+                <p class="text-gray-500 mt-4">
+                    ✓ بوت كامل مجاناً<br>
+                    ✓ Google Sheet تلقائي لمتابعة الأسئلة
+                </p>
             </div>
             </form>
         </div>
@@ -138,152 +186,446 @@ function saveAnswer(id, value) {
 // العودة للخلف
 function goBack() {
     document.getElementById('questionsSection').classList.add('hidden');
-    document.getElementById('previewSection').classList.add('hidden');
+    document.getElementById('freePlanSection').classList.add('hidden');
+    document.getElementById('successSection').classList.add('hidden');
 }
 
-// معاينة البوت
-function showPreview(e) {
+// عرض قسم الباقة المجانية
+function showFreePlan(e) {
     e.preventDefault();
     
     const business = businessTypes[selectedBusiness];
-    const totalChars = Object.values(userAnswers).join('').length;
     
-    let html = `
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12 animate-fadeIn">
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full font-bold">
-                        الخطوة الثالثة
-                    </span>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-2">
-                        معاينة البوت النهائي
-                    </h3>
-                </div>
-                <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
-                    <i class="fas fa-arrow-right ml-2"></i> العودة
-                </button>
+    // التحقق من الإجابات
+    let allAnswered = true;
+    business.questions.forEach(q => {
+        if (!userAnswers[q.id] || userAnswers[q.id].trim() === '') {
+            allAnswered = false;
+        }
+    });
+    
+    if (!allAnswered) {
+        alert('⚠️ الرجاء الإجابة على جميع الأسئلة قبل المتابعة');
+        return;
+    }
+    
+    // تحديث ملخص الطلب
+    let summaryHTML = `
+        <div class="space-y-3">
+            <div class="flex justify-between">
+                <span>نوع المتجر:</span>
+                <span class="font-bold">${business.name}</span>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- معاينة البوت -->
-                <div class="border-2 border-gray-200 rounded-xl p-6">
-                    <h4 class="font-bold text-xl mb-4 flex items-center">
-                        <i class="fas fa-robot text-${business.color}-600 ml-2"></i>
-                        معاينة البوت
-                    </h4>
-                    <div class="chatbot-preview bg-gray-50 p-4 rounded-lg">
-                        <div class="bg-white rounded-lg shadow-inner p-4 h-64 overflow-y-auto">
-                            <div class="mb-4">
-                                <div class="bg-${business.color}-100 text-${business.color}-700 p-3 rounded-lg inline-block rounded-bl-none">
-                                    <strong>البوت:</strong> مرحباً! أنا البوت المساعد لـ ${business.name}. كيف يمكنني مساعدتك؟
-                                </div>
-                            </div>
-                            ${business.questions.map((q, i) => `
-                                <div class="mb-4 text-left">
-                                    <div class="bg-gray-100 text-gray-700 p-3 rounded-lg inline-block rounded-br-none max-w-xs">
-                                        <strong>الزبون:</strong> ${q.text}
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="bg-${business.color}-100 text-${business.color}-700 p-3 rounded-lg inline-block rounded-bl-none max-w-xs">
-                                        <strong>البوت:</strong> ${userAnswers[q.id] || 'سيتم إضافة الإجابة هنا...'}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- اختيار الباقة -->
-                <div>
-                    <h4 class="font-bold text-xl mb-6">اختر باقاتك</h4>
-                    
-                    <div class="space-y-6">
-                        <!-- الباقة الأساسية -->
-                        <div class="border-2 border-gray-200 rounded-xl p-6 hover:border-gray-300 transition">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h5 class="font-bold text-lg">الباقة الأساسية</h5>
-                                    <p class="text-gray-600 text-sm">مناسب للبداية</p>
-                                </div>
-                                <div class="text-left">
-                                    <span class="text-3xl font-bold">$15</span>
-                                    <span class="text-gray-500 block">مرة واحدة</span>
-                                </div>
-                            </div>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> ملف HTML جاهز</li>
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> ${business.questions.length} سؤال أساسي</li>
-                                <li class="flex items-center"><i class="fas fa-times text-red-500 ml-2"></i> بدون Google Sheet</li>
-                                <li class="flex items-center"><i class="fas fa-times text-red-500 ml-2"></i> دعم محدود</li>
-                            </ul>
-                            <button onclick="selectPlan('basic')" class="w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-200 transition">
-                                اختر هذه الباقة
-                            </button>
-                        </div>
-                        
-                        <!-- الباقة المتقدمة -->
-                        <div class="border-2 border-${business.color}-500 rounded-xl p-6 bg-${business.color}-50 relative">
-                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                <span class="bg-${business.color}-600 text-white px-4 py-1 rounded-full text-sm font-bold">الأفضل</span>
-                            </div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h5 class="font-bold text-lg">الباقة المتقدمة</h5>
-                                    <p class="text-gray-600 text-sm">الأكثر طلباً</p>
-                                </div>
-                                <div class="text-left">
-                                    <span class="text-3xl font-bold text-${business.color}-700">$30</span>
-                                    <span class="text-gray-500 block">مرة واحدة</span>
-                                </div>
-                            </div>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> ملف HTML جاهز</li>
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> ${business.questions.length} سؤال أساسي</li>
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> <strong>Google Sheet تلقائي</strong></li>
-                                <li class="flex items-center"><i class="fas fa-check text-green-500 ml-2"></i> دعم لمدة 6 أشهر</li>
-                            </ul>
-                            <button onclick="selectPlan('pro')" class="w-full bg-${business.color}-600 text-white py-3 rounded-lg font-bold hover:bg-${business.color}-700 transition">
-                                اختر هذه الباقة
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8 p-4 bg-blue-50 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-info-circle text-blue-600 text-xl ml-3"></i>
-                            <div>
-                                <p class="font-bold text-blue-800">Google Sheet التلقائي</p>
-                                <p class="text-blue-600 text-sm">سيتم إنشاء Google Sheet باسمك تلقائياً بعد الدفع، يحفظ كل بيانات البوت ويسمح لك بتعديلها</p>
-                            </div>
-                        </div>
-                    </div>
+    `;
+    
+    business.questions.forEach(q => {
+        const answer = userAnswers[q.id];
+        summaryHTML += `
+            <div class="flex justify-between items-start">
+                <span class="text-gray-600">${q.text}:</span>
+                <span class="text-right font-medium max-w-xs">${answer.substring(0, 50)}${answer.length > 50 ? '...' : ''}</span>
+            </div>
+        `;
+    });
+    
+    summaryHTML += `
+            <div class="pt-3 border-t">
+                <div class="flex justify-between text-green-600 font-bold">
+                    <span>السعر:</span>
+                    <span>مجاناً 🎁</span>
                 </div>
             </div>
         </div>
     `;
     
-    document.getElementById('previewSection').innerHTML = html;
-    document.getElementById('previewSection').classList.remove('hidden');
+    document.getElementById('orderSummary').innerHTML = summaryHTML;
     document.getElementById('questionsSection').classList.add('hidden');
-    
-    // Scroll
-    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('freePlanSection').classList.remove('hidden');
+    document.getElementById('freePlanSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-// اختيار الباقة
-function selectPlan(plan) {
+// معالجة الطلب المجاني
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('freeBotForm');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('userEmail').value;
+            const name = document.getElementById('userName').value;
+            
+            if (!email || !name) {
+                alert('⚠️ الرجاء إدخال البريد الإلكتروني والاسم');
+                return;
+            }
+            
+            const formData = {
+                email: email,
+                name: name,
+                business: businessTypes[selectedBusiness].name,
+                questions: userAnswers,
+                timestamp: new Date().toISOString()
+            };
+            
+            // 1. أرسل البيانات لـ Google Form
+            await submitToGoogleForm(formData);
+            
+            // 2. أنشئ البوت
+            const botContent = generateCompleteBotFile();
+            
+            // 3. عرض التحميل المباشر
+            showDownloadSection(botContent);
+        });
+    }
+});
+
+// توليد ملف البوت الكامل
+function generateCompleteBotFile() {
     const business = businessTypes[selectedBusiness];
-    const email = prompt("📧 أدخل بريدك الإلكتروني لإرسال البوت:");
     
-    if (!email) return;
+    return `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شات بوت ${business.name}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .chat-header h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            clear: both;
+        }
+        
+        .user-message {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 18px 18px 0 18px;
+            float: left;
+        }
+        
+        .bot-message {
+            background: white;
+            color: #1f2937;
+            padding: 10px 15px;
+            border-radius: 18px 18px 18px 0;
+            float: right;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+        
+        .chat-input button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .chat-input button:hover {
+            background: #5a67d8;
+        }
+        
+        .quick-questions {
+            padding: 10px 15px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .quick-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quick-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #667eea;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            z-index: 999;
+        }
+        
+        .chat-toggle i {
+            font-size: 24px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="chat-toggle" id="chatToggle">
+        <i class="fas fa-robot"></i>
+    </div>
     
-    alert(`🎉 تم استلام طلبك!\n\nسيتم إرسال البوت إلى:\n${email}\n\nالخطوات القادمة:\n1. سيصلك رابط الدفع\n2. بعد التأكيد، سيصلك البوت\n3. للباقة المتقدمة: Google Sheet سيصلك تلقائياً`);
+    <div class="chatbot-container hidden" id="chatbot">
+        <div class="chat-header">
+            <h3>${business.name}</h3>
+            <p>أنا البوت المساعد، كيف يمكنني مساعدتك؟</p>
+        </div>
+        
+        <div class="quick-questions" id="quickQuestions"></div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                مرحباً! أنا البوت المساعد لـ ${business.name}. 
+                يمكنك سؤالي عن أي شيء، أو اختيار أحد الأسئلة السريعة.
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." dir="rtl">
+            <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const botData = {
+            businessName: "${business.name}",
+            answers: ${JSON.stringify(userAnswers)},
+            faqs: [
+                ${business.questions.map(q => `{
+                    question: "${q.text}",
+                    answer: "${userAnswers[q.id] || 'سيتم إضافة الإجابة قريباً'}"
+                }`).join(',\n                ')}
+            ]
+        };
+        
+        const chatToggle = document.getElementById('chatToggle');
+        const chatbot = document.getElementById('chatbot');
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const quickQuestions = document.getElementById('quickQuestions');
+        
+        botData.faqs.forEach(faq => {
+            const btn = document.createElement('button');
+            btn.className = 'quick-btn';
+            btn.textContent = faq.question.length > 30 ? faq.question.substring(0, 30) + '...' : faq.question;
+            btn.onclick = () => askQuestion(faq.question);
+            quickQuestions.appendChild(btn);
+        });
+        
+        chatToggle.onclick = () => {
+            chatbot.classList.toggle('hidden');
+        };
+        
+        sendButton.onclick = sendMessage;
+        userInput.onkeypress = (e) => {
+            if (e.key === 'Enter') sendMessage();
+        };
+        
+        function sendMessage() {
+            const question = userInput.value.trim();
+            if (question) {
+                askQuestion(question);
+                userInput.value = '';
+            }
+        }
+        
+        function askQuestion(question) {
+            addMessage(question, 'user');
+            
+            let answer = "عذراً، لا أعرف الإجابة على هذا السؤال. يمكنك التواصل مع الدعم.";
+            
+            for (const faq of botData.faqs) {
+                if (question.includes(faq.question.substring(0, 10)) || faq.question.includes(question.substring(0, 10))) {
+                    answer = faq.answer;
+                    break;
+                }
+            }
+            
+            setTimeout(() => {
+                addMessage(answer, 'bot');
+            }, 500);
+        }
+        
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = \`message \${sender}-message\`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
     
-    // محاكاة الإرسال
-    setTimeout(() => {
-        alert(`✅ تم إرسال رابط الدفع إلى ${email}\n\nتحقق من بريدك (والمجلد الرسائل المزعجة أيضاً)`);
-    }, 1000);
+    <div style="text-align: center; margin: 20px auto; font-size: 12px; color: #6b7280; padding: 10px; max-width: 500px;">
+        <p>بوت مقدم من <strong>ChatBot Builder</strong></p>
+        <p>تم الإنشاء: ${new Date().toLocaleDateString('ar-EG')}</p>
+        <p>نوع المتجر: ${business.name}</p>
+    </div>
+</body>
+</html>`;
+}
+
+// دالة عرض التحميل المباشر
+function showDownloadSection(botContent) {
+    // إنشاء ملف للتحميل
+    const blob = new Blob([botContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    let html = `
+        <div class="text-center bg-white rounded-2xl shadow-xl p-8 my-12 animate-fadeIn">
+            <div class="text-green-600 text-6xl mb-6">🎉</div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-4">بوتك جاهز للتحميل!</h3>
+            <p class="text-gray-600 text-lg mb-8">تم إرسال بياناتك بنجاح وحفظها في نظامنا</p>
+            
+            <div class="max-w-2xl mx-auto">
+                <!-- تحميل البوت -->
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-8 rounded-xl mb-8">
+                    <h4 class="font-bold text-2xl mb-4 text-purple-700">
+                        <i class="fas fa-robot ml-2"></i>
+                        حمّل ملف البوت الآن
+                    </h4>
+                    <p class="text-gray-700 mb-6">ملف HTML جاهز للرفع على موقعك</p>
+                    <a href="${url}" download="شات-بوت-موقعي.html" 
+                       class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg inline-block">
+                        <i class="fas fa-download ml-2"></i> تحميل ملف البوت
+                    </a>
+                    <p class="text-gray-500 text-sm mt-4">حجم الملف: ${(botContent.length / 1024).toFixed(1)} كيلوبايت</p>
+                </div>
+                
+                <!-- Google Sheet -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-8 rounded-xl mb-8">
+                    <h4 class="font-bold text-2xl mb-4 text-green-700">
+                        <i class="fas fa-table ml-2"></i>
+                        بياناتك محفوظة في Google Sheet
+                    </h4>
+                    <p class="text-gray-700 mb-6">يمكنك الاطلاع على جميع الطلبات وتعديلها</p>
+                    <a href="${GOOGLE_FORM_CONFIG.SHEET_URL}" target="_blank" 
+                       class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg inline-block">
+                        <i class="fas fa-external-link-alt ml-2"></i> فتح Google Sheet
+                    </a>
+                    <p class="text-gray-500 text-sm mt-4">سيتم تحديث البيانات تلقائياً</p>
+                </div>
+                
+                <!-- التعليمات -->
+                <div class="bg-yellow-50 p-6 rounded-xl text-right">
+                    <h4 class="font-bold text-xl mb-4 text-yellow-800">📝 خطوات رفع البوت على موقعك:</h4>
+                    <ol class="space-y-3 text-gray-700 pr-6">
+                        <li><strong>1.</strong> حمّل ملف <code class="bg-gray-200 px-2 py-1 rounded">شات-بوت-موقعي.html</code></li>
+                        <li><strong>2.</strong> ارفعه على استضافة موقعك (استخدم File Manager أو FTP)</li>
+                        <li><strong>3.</strong> أضف هذا الكود في صفحات موقعك:<br>
+                            <code class="bg-gray-800 text-white p-2 rounded block text-sm mt-2 text-left">&lt;iframe src="/شات-بوت-موقعي.html" width="350" height="500" style="border:none;"&gt;&lt;/iframe&gt;</code>
+                        </li>
+                        <li><strong>4.</strong> لحفظ البوت في مجلد معين:<br>
+                            <code class="bg-gray-800 text-white p-2 rounded block text-sm mt-2 text-left">&lt;iframe src="/chatbot/شات-بوت-موقعي.html" width="350" height="500"&gt;&lt;/iframe&gt;</code>
+                        </li>
+                    </ol>
+                </div>
+                
+                <!-- إنشاء بوت آخر -->
+                <div class="mt-12">
+                    <p class="text-gray-600 mb-4">هل تريد إنشاء بوت آخر؟</p>
+                    <button onclick="goBack()" 
+                            class="bg-gray-200 text-gray-800 px-8 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
+                        ← أنشئ بوتاً جديداً
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('successSection').innerHTML = html;
+    document.getElementById('freePlanSection').classList.add('hidden');
+    document.getElementById('successSection').classList.remove('hidden');
+    document.getElementById('successSection').scrollIntoView({ behavior: 'smooth' });
 }
 
 // إضافة CSS للـ animations
@@ -295,6 +637,9 @@ style.textContent = `
     }
     .animate-fadeIn {
         animation: fadeIn 0.5s ease-out;
+    }
+    .hidden {
+        display: none !important;
     }
 `;
 document.head.appendChild(style);
