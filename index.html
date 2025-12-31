@@ -263,5 +263,155 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- إضافة JavaScript مباشرة إذا الملف مش متصل -->
+<script>
+// ===== كود الطوارئ - يعمل فوراً =====
+
+// 1. تأكد أن كل العناصر موجودة
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ الصفحة محملة');
+    
+    // 2. إضافة تأثيرات للأزرار
+    const buttons = document.querySelectorAll('.btn-primary, .btn-secondary, .option-card');
+    buttons.forEach(btn => {
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', function(e) {
+            console.log('تم النقر على:', e.target);
+        });
+    });
+    
+    // 3. تفعيل أزرار رفع الملف
+    const fileUploadArea = document.querySelector('.file-upload-area .border-dashed');
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('click', function() {
+            console.log('✅ ملفات: نافذة رفع الملفات تعمل');
+            // افتح نافذة اختيار الملف
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.pdf,.doc,.docx,.txt';
+            fileInput.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    alert(`✅ تم اختيار الملف: ${file.name}`);
+                    document.getElementById('fileName').textContent = `✓ ${file.name}`;
+                    document.getElementById('fileName').classList.remove('hidden');
+                }
+            };
+            fileInput.click();
+        });
+    }
+    
+    // 4. تفعيل أزرار مصدر البيانات
+    const optionCards = document.querySelectorAll('.option-card');
+    optionCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            console.log('✅ اختيار مصدر البيانات يعمل');
+            
+            // إزالة التحديد القديم
+            optionCards.forEach(c => {
+                c.classList.remove('border-blue-500', 'border-green-500', 'shadow-lg');
+            });
+            
+            // تحديد الجديد
+            const isFileOption = card.querySelector('.fa-file-upload');
+            if (isFileOption) {
+                card.classList.add('border-blue-500', 'shadow-lg');
+                // إظهار منطقة رفع الملف
+                document.getElementById('fileUploadArea').classList.remove('hidden');
+                document.getElementById('linkInputArea').classList.add('hidden');
+            } else {
+                card.classList.add('border-green-500', 'shadow-lg');
+                // إظهار منطقة الرابط
+                document.getElementById('linkInputArea').classList.remove('hidden');
+                document.getElementById('fileUploadArea').classList.add('hidden');
+            }
+        });
+    });
+    
+    // 5. تفعيل نموذج إنشاء البوت
+    const botForm = document.getElementById('botAccountForm');
+    if (botForm) {
+        botForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const botName = document.getElementById('botName').value;
+            const email = document.getElementById('adminEmail').value;
+            
+            if (botName && email) {
+                alert(`🎉 تم إنشاء البوت: ${botName}\nسيتم إرسال الرابط إلى: ${email}`);
+                
+                // محاكاة إنشاء البوت
+                setTimeout(() => {
+                    // إظهار قسم التحميل
+                    const downloadHTML = `
+                        <section class="py-16">
+                            <div class="container mx-auto px-4">
+                                <div class="text-center bg-white rounded-2xl shadow-2xl p-8 max-w-3xl mx-auto">
+                                    <div class="text-green-600 text-6xl mb-6">🚀</div>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-4">بوتك جاهز للتحميل!</h3>
+                                    
+                                    <div class="mb-8">
+                                        <button onclick="downloadBot()" class="btn-primary text-xl px-12 py-4">
+                                            <i class="fas fa-download ml-2"></i> تحميل ملف البوت
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button onclick="location.reload()" class="btn-secondary">
+                                            <i class="fas fa-plus ml-2"></i> إنشاء بوت جديد
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                    
+                    document.getElementById('downloadSection').innerHTML = downloadHTML;
+                    document.getElementById('downloadSection').classList.remove('hidden');
+                    document.getElementById('builder').classList.add('hidden');
+                }, 1000);
+            } else {
+                alert('⚠️ الرجاء ملء جميع الحقول');
+            }
+        });
+    }
+    
+    console.log('✅ جميع الأنظمة مفعلة');
+});
+
+// دالة تحميل البوت
+function downloadBot() {
+    const botContent = `<!DOCTYPE html>
+<html>
+<head><title>بوتك الذكي</title></head>
+<body>
+<h1>بوتك يعمل بنجاح! 🎉</h1>
+<p>هذا نموذج للبوت. في النسخة الكاملة سيكون ذكياً.</p>
+</body>
+</html>`;
+    
+    const blob = new Blob([botContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'my-chatbot.html';
+    a.click();
+    
+    alert('✅ تم تحميل ملف البوت بنجاح!');
+}
+
+// دالة تحميل JavaScript الخارجي إذا فشل
+function loadExternalScript() {
+    const script = document.createElement('script');
+    script.src = 'script.js';
+    script.onerror = function() {
+        console.log('⚠️ ملف script.js غير موجود، استمرار مع الكود الداخلي');
+    };
+    document.head.appendChild(script);
+}
+
+// تشغيل كل شيء
+loadExternalScript();
+</script>
 </body>
 </html>
