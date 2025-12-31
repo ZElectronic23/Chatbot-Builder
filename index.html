@@ -136,9 +136,61 @@
                 <!-- هنا تظهر الأسئلة الديناميكية -->
             </div>
 
-            <!-- قسم المعاينة (سيظهر بعد الإجابة) -->
-            <div id="previewSection" class="hidden">
-                <!-- هنا تظهر المعاينة -->
+            <!-- قسم الباقة المجانية -->
+            <div id="freePlanSection" class="hidden bg-white rounded-2xl shadow-xl p-8 my-12">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4">
+                        🎁 <span class="text-green-600">خذ بوتك مجاناً!</span>
+                    </h3>
+                    <p class="text-gray-600 text-lg">املأ بياناتك لتحصل على البوت</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <!-- نموذج مجاني بسيط -->
+                    <form id="freeBotForm" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2">📧 البريد الإلكتروني *</label>
+                            <input type="email" id="userEmail" 
+                                   class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="name@example.com"
+                                   required>
+                            <p class="text-sm text-gray-500 mt-1">لإرسال البوت والتحديثات</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2">👤 اسمك أو اسم المتجر *</label>
+                            <input type="text" id="userName" 
+                                   class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                                   placeholder="مثال: متجر التقنية"
+                                   required>
+                            <p class="text-sm text-gray-500 mt-1">سيظهر في البوت والـ Google Sheet</p>
+                        </div>
+                        
+                        <!-- ملخص الطلب -->
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-4">📦 ملخص طلبك:</h4>
+                            <div id="orderSummary">
+                                <!-- سيتم ملؤه تلقائياً -->
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" 
+                                    class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg w-full">
+                                <i class="fas fa-paper-plane ml-2"></i> أرسل طلب البوت
+                            </button>
+                            <p class="text-gray-500 mt-4 text-sm">
+                                ✓ سيصلك البوت للتحميل المباشر<br>
+                                ✓ بياناتك تحفظ في Google Sheet تلقائياً
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم النجاح -->
+            <div id="successSection" class="hidden">
+                <!-- هنا تظهر رسالة النجاح والتحميل -->
             </div>
         </div>
     </section>
@@ -158,99 +210,6 @@
         </div>
     </footer>
 
-    <script>
-        // الكود JavaScript هنا
-    </script>
     <script src="script.js"></script>
-    <!-- قسم الباقة المجانية -->
-<div id="freePlanSection" class="hidden bg-white rounded-2xl shadow-xl p-8 my-12">
-    <div class="text-center mb-8">
-        <h3 class="text-3xl font-bold text-gray-800 mb-4">
-            🎁 <span class="text-green-600">خذ بوتك مجاناً!</span>
-        </h3>
-        <p class="text-gray-600 text-lg">نقدم خدمتنا مجاناً لأول 100 عميل</p>
-    </div>
-    
-    <div class="max-w-2xl mx-auto">
-        <!-- نموذج مجاني بسيط -->
-        <form id="freeBotForm" class="space-y-6">
-            <div>
-                <label class="block text-gray-700 font-bold mb-2">📧 بريدك الإلكتروني</label>
-                <input type="email" id="userEmail" 
-                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                       placeholder="name@example.com"
-                       required>
-            </div>
-            
-            <div>
-                <label class="block text-gray-700 font-bold mb-2">👤 اسمك أو اسم متجرك</label>
-                <input type="text" id="userName" 
-                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                       placeholder="مثال: متجر التقنية"
-                       required>
-            </div>
-            
-            <div>
-                <label class="block text-gray-700 font-bold mb-2">
-                    🔗 رابط حسابك على LinkedIn (اختياري)
-                    <span class="text-sm text-gray-500 font-normal">لأتصل بك للمتابعة</span>
-                </label>
-                <input type="url" id="linkedinUrl" 
-                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                       placeholder="https://linkedin.com/in/اسمك">
-            </div>
-            
-            <!-- ملخص الطلب -->
-            <div class="bg-gray-50 p-6 rounded-xl">
-                <h4 class="font-bold text-lg mb-4">📦 ملخص طلبك:</h4>
-                <div id="orderSummary">
-                    <!-- سيتم ملؤه تلقائياً -->
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <button type="submit" 
-                        class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg w-full">
-                    <i class="fas fa-paper-plane ml-2"></i> أرسل طلب البوت المجاني
-                </button>
-                <p class="text-gray-500 mt-4 text-sm">
-                    ✓ سيصلك البوت على بريدك خلال 5 دقائق<br>
-                    ✓ Google Sheet تلقائي لمتابعة الأسئلة
-                </p>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- قسم النجاح -->
-<div id="successSection" class="hidden bg-white rounded-2xl shadow-xl p-8 my-12 text-center">
-    <div class="text-green-600 text-6xl mb-6">🎉</div>
-    <h3 class="text-3xl font-bold text-gray-800 mb-4">تم استلام طلبك بنجاح!</h3>
-    <p class="text-gray-600 text-lg mb-8">
-        تم إرسال البوت إلى بريدك الإلكتروني.<br>
-        تحقق من صندوق الوارد والمجلد "الرسائل المزعجة".
-    </p>
-    
-    <div class="bg-blue-50 p-6 rounded-xl max-w-md mx-auto mb-8">
-        <h4 class="font-bold text-blue-800 mb-3">📬 ماذا بعد؟</h4>
-        <p class="text-blue-700">
-            1. ابحث عن إيميل من "ChatBot Builder"<br>
-            2. افتح المرفقات (ملف HTML)<br>
-            3. ارفع الملف على موقعك<br>
-            4. جربه مباشرة!
-        </p>
-    </div>
-    
-    <div class="space-y-4">
-        <a href="index.html" class="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-purple-700">
-            ← أنشئ بوت آخر
-        </a>
-        <p class="text-gray-500">أو</p>
-        <a href="https://linkedin.com" target="_blank" 
-           class="inline-block bg-blue-700 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-800">
-            <i class="fab fa-linkedin ml-2"></i> تابعني على LinkedIn
-        </a>
-    </div>
-</div>
 </body>
 </html>
