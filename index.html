@@ -11,11 +11,84 @@
         body { font-family: 'Tajawal', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .step-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* زر اللغة */
         .language-switcher {
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 1000;
+        }
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 140px;
+            overflow: hidden;
+        }
+        .lang-dropdown.show {
+            display: block;
+        }
+        .lang-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lang-option:hover {
+            background: #f8f9fa;
+        }
+        
+        /* تحسينات النموذج */
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9fafb;
+        }
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .file-upload-area.dragover {
+            border-color: #667eea;
+            background: #e6edff;
+        }
+        
+        /* تحسينات البوت */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            z-index: 9999;
+            transition: transform 0.3s;
+        }
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -23,16 +96,16 @@
     
     <!-- زر تغيير اللغة -->
     <div class="language-switcher">
-        <button id="langToggle" class="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2 hover:bg-gray-50">
+        <button id="langToggle" class="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2 hover:bg-gray-50 transition">
             <span id="currentLang">🇸🇦 عربي</span>
             <i class="fas fa-chevron-down"></i>
         </button>
-        <div id="langDropdown" class="hidden absolute top-full mt-2 bg-white shadow-xl rounded-lg overflow-hidden min-w-[120px]">
-            <button onclick="changeLanguage('ar')" class="w-full text-right px-4 py-2 hover:bg-gray-100 flex items-center justify-between gap-2">
+        <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option" onclick="changeLanguage('ar')">
                 <span>🇸🇦 عربي</span>
                 <i class="fas fa-check text-green-500" id="checkAr"></i>
             </button>
-            <button onclick="changeLanguage('en')" class="w-full text-right px-4 py-2 hover:bg-gray-100 flex items-center justify-between gap-2">
+            <button class="lang-option" onclick="changeLanguage('en')">
                 <span>🇬🇧 English</span>
                 <i class="fas fa-check text-green-500 hidden" id="checkEn"></i>
             </button>
@@ -189,28 +262,6 @@
                             <p class="text-sm text-gray-500 mt-1" id="nameHelp">سيظهر في البوت</p>
                         </div>
                         
-                        <!-- خيار رفع ملفات إضافية -->
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
-                            <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"></i>
-                            <h4 class="font-bold text-lg mb-2" id="uploadTitle">رفع ملفات إضافية (اختياري)</h4>
-                            <p class="text-gray-600 text-sm mb-4" id="uploadDesc">يمكنك رفع ملف يحتوي على معلومات إضافية عن عملك</p>
-                            <input type="file" id="additionalFile" class="hidden" accept=".pdf,.doc,.docx,.txt">
-                            <button type="button" onclick="document.getElementById('additionalFile').click()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition">
-                                <i class="fas fa-plus ml-2"></i> <span id="uploadBtn">اختر ملف</span>
-                            </button>
-                            <div id="fileName" class="text-sm text-green-600 mt-2 hidden"></div>
-                            <p class="text-xs text-gray-500 mt-2" id="fileTypes">PDF, Word, أو ملف نصي</p>
-                        </div>
-                        
-                        <!-- إضافة رابط مرجعي -->
-                        <div>
-                            <label class="block text-gray-700 font-bold mb-2" id="linkLabel">🔗 رابط مرجعي (اختياري)</label>
-                            <input type="url" id="referenceLink" 
-                                   class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                                   placeholder="https://example.com/info">
-                            <p class="text-sm text-gray-500 mt-1" id="linkHelp">رابط موقع يحتوي على معلومات عن عملك</p>
-                        </div>
-                        
                         <!-- ملخص الطلب -->
                         <div class="bg-gray-50 p-6 rounded-xl">
                             <h4 class="font-bold text-lg mb-4" id="orderTitle">📦 ملخص طلبك:</h4>
@@ -245,12 +296,6 @@
         <div class="container mx-auto px-4 text-center">
             <h3 class="text-2xl font-bold mb-6" id="footerTitle">ChatBot Builder</h3>
             <p class="text-gray-400 mb-8" id="footerDesc">أول منصة عربية لإنشاء شات بوتات ذكية للمتاجر والشركات</p>
-            <div class="flex justify-center space-x-6 space-x-reverse">
-                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github text-xl"></i></a>
-            </div>
             <p class="mt-8 text-gray-500 text-sm">© 2024 ChatBot Builder. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
