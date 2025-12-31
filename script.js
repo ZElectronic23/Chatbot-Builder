@@ -1,13 +1,26 @@
 // ================================
-// نظام اللغة متعدد اللغات
+// نظام اللغة متعدد اللغات - مضمون الشغل
 // ================================
 
 let currentLanguage = 'ar';
+let selectedBusiness = null;
+let userAnswers = {};
 
+// إعدادات Google Form - تم إخفاؤها عن المستخدم
+const GOOGLE_FORM_CONFIG = {
+    FORM_ID: "1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ",
+    FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ/formResponse"
+};
+
+// الترجمات
 const translations = {
     ar: {
+        // الهيدر
         siteTitle: "ChatBot Builder",
         siteSubtitle: "أنشئ بوت ذكي لموقعك في 5 دقائق - بدون برمجة",
+        startBtn: "ابدأ الآن مجاناً",
+        
+        // الخطوات
         howItWorks: "كيف تعمل المنصة؟",
         step1Title: "اختر نوع متجرك",
         step1Desc: "متجر إلكتروني، خدمات، استشارات، أو أي نوع أعمال",
@@ -15,9 +28,10 @@ const translations = {
         step2Desc: "أسئلة مخصصة لنوع عملك لبناء قاعدة معرفية للبوت",
         step3Title: "خذ بوتك الجاهز",
         step3Desc: "ملف HTML جاهز للرفع على موقعك",
-        startBtn: "ابدأ الآن مجاناً",
         step1Badge: "الخطوة الأولى",
         step1Text: "اختر نوع متجرك",
+        
+        // أنواع الأعمال
         bizEcommerce: "متجر إلكتروني",
         bizEcommerceDesc: "لبيع المنتجات أونلاين",
         bizServices: "خدمات",
@@ -26,6 +40,8 @@ const translations = {
         bizConsultingDesc: "للرد على استفسارات العملاء",
         bizOther: "أخرى",
         bizOtherDesc: "أي نوع أعمال آخر",
+        
+        // الميزات
         feature1: "سياسات شحن",
         feature2: "طرق دفع",
         feature3: "إرجاع منتجات",
@@ -38,27 +54,29 @@ const translations = {
         feature10: "أسئلة مخصصة",
         feature11: "تصميم مرن",
         feature12: "متوافق مع الجميع",
+        
+        // النموذج
         freeTitle: "خذ بوتك مجاناً!",
         freeSubtitle: "املأ بياناتك لتحصل على البوت",
         emailLabel: "📧 البريد الإلكتروني *",
         emailHelp: "لإرسال البوت والتحديثات",
         nameLabel: "👤 اسمك أو اسم المتجر *",
         nameHelp: "سيظهر في البوت",
-        uploadTitle: "رفع ملفات إضافية (اختياري)",
-        uploadDesc: "يمكنك رفع ملف يحتوي على معلومات إضافية عن عملك",
-        uploadBtn: "اختر ملف",
-        fileTypes: "PDF, Word, أو ملف نصي",
-        linkLabel: "🔗 رابط مرجعي (اختياري)",
-        linkHelp: "رابط موقع يحتوي على معلومات عن عملك",
         orderTitle: "📦 ملخص طلبك:",
         submitBtn: "أرسل طلب البوت",
         submitInfo: "✓ سيصلك البوت للتحميل المباشر<br>✓ يمكنك إضافة أسئلة إضافية لاحقاً",
+        
+        // الفوتر
         footerTitle: "ChatBot Builder",
         footerDesc: "أول منصة عربية لإنشاء شات بوتات ذكية للمتاجر والشركات"
     },
     en: {
+        // الهيدر
         siteTitle: "ChatBot Builder",
         siteSubtitle: "Build a smart chatbot for your website in 5 minutes - no coding",
+        startBtn: "Start Free Now",
+        
+        // الخطوات
         howItWorks: "How It Works?",
         step1Title: "Choose Your Business Type",
         step1Desc: "E-commerce, Services, Consulting, or any business type",
@@ -66,9 +84,10 @@ const translations = {
         step2Desc: "Custom questions for your business to build knowledge base",
         step3Title: "Get Your Ready Bot",
         step3Desc: "HTML file ready to upload to your website",
-        startBtn: "Start Free Now",
         step1Badge: "Step 1",
         step1Text: "Choose Your Business Type",
+        
+        // أنواع الأعمال
         bizEcommerce: "E-commerce Store",
         bizEcommerceDesc: "For online product sales",
         bizServices: "Services",
@@ -77,6 +96,8 @@ const translations = {
         bizConsultingDesc: "For answering customer inquiries",
         bizOther: "Other",
         bizOtherDesc: "Any other business type",
+        
+        // الميزات
         feature1: "Shipping Policies",
         feature2: "Payment Methods",
         feature3: "Returns Policy",
@@ -89,278 +110,308 @@ const translations = {
         feature10: "Custom Questions",
         feature11: "Flexible Design",
         feature12: "Compatible with All",
+        
+        // النموذج
         freeTitle: "Get Your Bot for Free!",
         freeSubtitle: "Fill your details to get the bot",
         emailLabel: "📧 Email Address *",
         emailHelp: "To send the bot and updates",
         nameLabel: "👤 Your Name or Business Name *",
         nameHelp: "Will appear in the bot",
-        uploadTitle: "Upload Additional Files (Optional)",
-        uploadDesc: "You can upload a file with additional information about your business",
-        uploadBtn: "Choose File",
-        fileTypes: "PDF, Word, or Text file",
-        linkLabel: "🔗 Reference Link (Optional)",
-        linkHelp: "Website link containing information about your business",
         orderTitle: "📦 Order Summary:",
         submitBtn: "Send Bot Request",
         submitInfo: "✓ You'll get the bot for direct download<br>✓ You can add more questions later",
+        
+        // الفوتر
         footerTitle: "ChatBot Builder",
         footerDesc: "First Arabic platform to create smart chatbots for stores and companies"
     }
 };
 
-// تغيير اللغة
+// بيانات الأسئلة باللغتين
+const businessTypes = {
+    ecommerce: {
+        name: { ar: "متجر إلكتروني", en: "E-commerce Store" },
+        color: "purple",
+        questions: [
+            { 
+                id: "products", 
+                text: { ar: "ما هي أنواع المنتجات التي تبيعها؟", en: "What types of products do you sell?" },
+                placeholder: { ar: "مثال: أجهزة إلكترونية، ملابس، إكسسوارات", en: "Example: Electronics, clothes, accessories" }
+            },
+            { 
+                id: "shipping", 
+                text: { ar: "ما هي سياسة الشحن والتوصيل؟", en: "What is your shipping policy?" },
+                placeholder: { ar: "مثال: شحن مجاني للطلبات فوق 200 ريال", en: "Example: Free shipping for orders over 200 SAR" }
+            },
+            { 
+                id: "payment", 
+                text: { ar: "ما هي طرق الدفع المتاحة؟", en: "What payment methods are available?" },
+                placeholder: { ar: "مثال: بطاقات ائتمان، تحويل بنكي، مدى", en: "Example: Credit cards, bank transfer, Mada" }
+            },
+            { 
+                id: "returns", 
+                text: { ar: "ما هي سياسة الإرجاع؟", en: "What is your return policy?" },
+                placeholder: { ar: "مثال: يمكن إرجاع المنتجات خلال 14 يوم", en: "Example: Products can be returned within 14 days" }
+            }
+        ]
+    },
+    services: {
+        name: { ar: "خدمات", en: "Services" },
+        color: "blue",
+        questions: [
+            { 
+                id: "services", 
+                text: { ar: "ما هي الخدمات التي تقدمها؟", en: "What services do you offer?" },
+                placeholder: { ar: "مثال: تصميم مواقع، تسويق إلكتروني", en: "Example: Website design, digital marketing" }
+            },
+            { 
+                id: "hours", 
+                text: { ar: "ما هي ساعات العمل؟", en: "What are your working hours?" },
+                placeholder: { ar: "مثال: من الأحد إلى الخميس، 9 صباحاً إلى 6 مساءً", en: "Example: Sunday to Thursday, 9 AM to 6 PM" }
+            },
+            { 
+                id: "booking", 
+                text: { ar: "كيف يمكن حجز موعد؟", en: "How can I book an appointment?" },
+                placeholder: { ar: "مثال: عبر الهاتف أو نموذج الموقع", en: "Example: Via phone or website form" }
+            },
+            { 
+                id: "pricing", 
+                text: { ar: "كيف يتم تحديد الأسعار؟", en: "How are prices determined?" },
+                placeholder: { ar: "مثال: حسب نوع الخدمة والوقت المطلوب", en: "Example: Based on service type and required time" }
+            }
+        ]
+    }
+};
+
+// ================================
+// إدارة اللغة
+// ================================
+
 function changeLanguage(lang) {
     currentLanguage = lang;
-    updateLanguageUI();
     
-    // تحديث علامات الاختيار
+    // تحديث زر اللغة
+    document.getElementById('currentLang').textContent = lang === 'ar' ? '🇸🇦 عربي' : '🇬🇧 English';
     document.getElementById('checkAr').classList.toggle('hidden', lang !== 'ar');
     document.getElementById('checkEn').classList.toggle('hidden', lang !== 'en');
-    document.getElementById('currentLang').textContent = lang === 'ar' ? '🇸🇦 عربي' : '🇬🇧 English';
     
-    // إغلاق القائمة المنسدلة
-    document.getElementById('langDropdown').classList.add('hidden');
-}
-
-// تحديث واجهة المستخدم حسب اللغة
-function updateLanguageUI() {
-    const texts = translations[currentLanguage];
+    // تحديث اتجاه الصفحة
+    document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
     
     // تحديث جميع النصوص
-    document.querySelectorAll('[id]').forEach(element => {
-        const id = element.id;
-        if (texts[id]) {
-            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.placeholder = texts[id];
-            } else {
-                element.innerHTML = texts[id];
-            }
+    updateAllTexts();
+    
+    // إغلاق القائمة المنسدلة
+    document.getElementById('langDropdown').classList.remove('show');
+    
+    // تحديث الأسئلة إذا كان هناك نوع محدد
+    if (selectedBusiness) {
+        updateQuestionsLanguage();
+    }
+}
+
+function updateAllTexts() {
+    const texts = translations[currentLanguage];
+    
+    // تحديث جميع العناصر التي لها id
+    Object.keys(texts).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.textContent = texts[key];
         }
     });
     
-    // تحديث اتجاه الصفحة
-    document.body.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = currentLanguage;
+    // تحديث مكان الهولد
+    const emailInput = document.getElementById('userEmail');
+    const nameInput = document.getElementById('userName');
+    if (emailInput && nameInput) {
+        emailInput.placeholder = currentLanguage === 'ar' ? 'name@example.com' : 'name@example.com';
+        nameInput.placeholder = currentLanguage === 'ar' ? 'مثال: متجر التقنية' : 'Example: Tech Store';
+    }
 }
 
+function updateQuestionsLanguage() {
+    const business = businessTypes[selectedBusiness];
+    if (!business) return;
+    
+    business.questions.forEach((q, index) => {
+        const textarea = document.getElementById(q.id);
+        const label = textarea?.previousElementSibling;
+        
+        if (label && textarea) {
+            // تحديث نص السؤال
+            const questionNumber = label.querySelector('.bg-gray-100');
+            const questionText = label.textContent.replace(questionNumber?.textContent || '', '').trim();
+            
+            label.innerHTML = `<span class="bg-gray-100 px-3 py-1 rounded-full mr-2">${index + 1}</span> ${q.text[currentLanguage]}`;
+            textarea.placeholder = q.placeholder[currentLanguage];
+        }
+    });
+}
+
+// ================================
 // إدارة القائمة المنسدلة للغة
+// ================================
+
 document.getElementById('langToggle').addEventListener('click', function(e) {
     e.stopPropagation();
-    document.getElementById('langDropdown').classList.toggle('hidden');
+    document.getElementById('langDropdown').classList.toggle('show');
 });
 
-// إغلاق القائمة عند النقر خارجها
-document.addEventListener('click', function() {
-    document.getElementById('langDropdown').classList.add('hidden');
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.language-switcher')) {
+        document.getElementById('langDropdown').classList.remove('show');
+    }
 });
 
 // ================================
 // النظام الأساسي
 // ================================
 
-// بيانات الأنواع المختلفة
-const businessTypes = {
-    ecommerce: {
-        name: { ar: "متجر إلكتروني", en: "E-commerce Store" },
-        icon: "fa-shopping-cart",
-        color: "purple",
-        questions: [
-            { 
-                id: "products", 
-                text: { ar: "ما هي أنواع المنتجات التي تبيعها؟", en: "What types of products do you sell?" },
-                placeholder: { ar: "أجهزة إلكترونية، ملابس، إكسسوارات...", en: "Electronics, clothes, accessories..." }
-            },
-            { 
-                id: "shipping", 
-                text: { ar: "ما هي سياسة الشحن والتوصيل؟", en: "What is your shipping and delivery policy?" },
-                placeholder: { ar: "الشحن مجاني للطلبات فوق 200 ريال، مدة التوصيل 2-3 أيام", en: "Free shipping for orders over 200 SAR, delivery time 2-3 days" }
-            },
-            { 
-                id: "payment", 
-                text: { ar: "ما هي طرق الدفع المتاحة؟", en: "What payment methods are available?" },
-                placeholder: { ar: "بطاقات الائتمان، تحويل بنكي، مدى، Apple Pay", en: "Credit cards, bank transfer, Mada, Apple Pay" }
-            },
-            { 
-                id: "returns", 
-                text: { ar: "ما هي سياسة الإرجاع والاستبدال؟", en: "What is your return and exchange policy?" },
-                placeholder: { ar: "يمكن إرجاع المنتجات خلال 14 يوم، بشروط محددة", en: "Products can be returned within 14 days, with specific conditions" }
-            }
-        ]
-    },
-    services: {
-        name: { ar: "خدمات", en: "Services" },
-        icon: "fa-concierge-bell",
-        color: "blue",
-        questions: [
-            { 
-                id: "services", 
-                text: { ar: "ما هي الخدمات التي تقدمها؟", en: "What services do you offer?" },
-                placeholder: { ar: "تصميم مواقع، تسويق إلكتروني، برمجة تطبيقات...", en: "Website design, digital marketing, app development..." }
-            },
-            { 
-                id: "hours", 
-                text: { ar: "ما هي ساعات العمل؟", en: "What are your working hours?" },
-                placeholder: { ar: "من الأحد إلى الخميس، 9 صباحاً إلى 6 مساءً", en: "Sunday to Thursday, 9 AM to 6 PM" }
-            },
-            { 
-                id: "booking", 
-                text: { ar: "كيف يمكن حجز موعد؟", en: "How can I book an appointment?" },
-                placeholder: { ar: "اتصل بنا، أو املأ النموذج على الموقع", en: "Call us, or fill the form on the website" }
-            },
-            { 
-                id: "pricing", 
-                text: { ar: "كيف يتم تحديد الأسعار؟", en: "How are prices determined?" },
-                placeholder: { ar: "حسب نوع الخدمة والوقت المطلوب، نقدم عروض أسعار مجانية", en: "Based on service type and required time, we offer free quotes" }
-            }
-        ]
-    },
-    consulting: {
-        name: { ar: "استشارات", en: "Consulting" },
-        icon: "fa-briefcase",
-        color: "green",
-        questions: [
-            { 
-                id: "consulting_types", 
-                text: { ar: "ما هي أنواع الاستشارات التي تقدمها؟", en: "What types of consulting do you offer?" },
-                placeholder: { ar: "استشارات تجارية، استشارات تقنية، استشارات تسويقية...", en: "Business consulting, technical consulting, marketing consulting..." }
-            },
-            { 
-                id: "experience", 
-                text: { ar: "ما هي خبرتك ومؤهلاتك؟", en: "What is your experience and qualifications?" },
-                placeholder: { ar: "خبرة 10 سنوات في المجال، شهادات معتمدة...", en: "10 years experience in the field, certified certificates..." }
-            },
-            { 
-                id: "process", 
-                text: { ar: "كيف تتم عملية الاستشارة؟", en: "How does the consulting process work?" },
-                placeholder: { ar: "جلسة أولية مجانية، ثم خطة عمل مفصلة...", en: "Free initial session, then detailed action plan..." }
-            },
-            { 
-                id: "pricing", 
-                text: { ar: "ما هي أسعار الاستشارات؟", en: "What are the consulting prices?" },
-                placeholder: { ar: "تبدأ من 500 ريال للجلسة، وتختلف حسب النوع", en: "Starting from 500 SAR per session, varies by type" }
-            }
-        ]
-    },
-    other: {
-        name: { ar: "أخرى", en: "Other" },
-        icon: "fa-store",
-        color: "red",
-        questions: [
-            { 
-                id: "business_desc", 
-                text: { ar: "صف عملك باختصار:", en: "Briefly describe your business:" },
-                placeholder: { ar: "نحن نقدم...", en: "We provide..." }
-            },
-            { 
-                id: "common_questions", 
-                text: { ar: "ما هي أكثر الأسئلة شيوعاً من عملائك؟", en: "What are the most common questions from your customers?" },
-                placeholder: { ar: "السؤال الأول: ...\nالسؤال الثاني: ...", en: "Question 1: ...\nQuestion 2: ..." }
-            },
-            { 
-                id: "contact_methods", 
-                text: { ar: "كيف يمكن للعملاء التواصل معك؟", en: "How can customers contact you?" },
-                placeholder: { ar: "واتساب، هاتف، إيميل، موقع الويب", en: "WhatsApp, phone, email, website" }
-            },
-            { 
-                id: "special_info", 
-                text: { ar: "معلومات إضافية مهمة:", en: "Important additional information:" },
-                placeholder: { ar: "أي معلومات إضافية تريد إضافتها", en: "Any additional information you want to add" }
-            }
-        ]
-    }
-};
-
-let selectedBusiness = null;
-let userAnswers = {};
-let additionalFiles = [];
-let referenceLinks = [];
-
-// === GOOGLE FORM CONFIG ===
-const GOOGLE_FORM_CONFIG = {
-    FORM_ID: "1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ",
-    EMAIL_FIELD: "entry.1500976572",
-    NAME_FIELD: "entry.1308518972", 
-    BUSINESS_FIELD: "entry.1150704877",
-    QUESTIONS_FIELD: "entry.1383109089",
-    
-    FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSf4sdK94v4gDbR24-n1OeaHukbiL_A2cBk42BaGPAlJrepZJQ/formResponse",
-    SHEET_URL: "https://docs.google.com/spreadsheets/d/1mFbqIspyUo7KpRzh_8o3g04MX4BeoD61D5M9nJ3zRNQ/edit#gid=0"
-};
-
-// إدارة رفع الملفات
-document.getElementById('additionalFile')?.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-            alert(currentLanguage === 'ar' ? 'الملف كبير جداً. الحد الأقصى 5 ميجابايت' : 'File too large. Maximum 5MB');
-            return;
-        }
-        
-        additionalFiles.push({
-            name: file.name,
-            size: (file.size / 1024).toFixed(2) + ' KB',
-            type: file.type
-        });
-        
-        document.getElementById('fileName').textContent = `✓ ${file.name}`;
-        document.getElementById('fileName').classList.remove('hidden');
-        
-        // حفظ الملف محلياً (في الواقع، سترفعه لسيرفر)
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            localStorage.setItem('additionalFile_' + file.name, event.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// دالة إرسال البيانات لـ Google Form
-async function submitToGoogleForm(formData) {
-    const url = GOOGLE_FORM_CONFIG.FORM_URL;
-    
-    // بناء البيانات
-    const params = new URLSearchParams({
-        [GOOGLE_FORM_CONFIG.EMAIL_FIELD]: formData.email,
-        [GOOGLE_FORM_CONFIG.NAME_FIELD]: formData.name,
-        [GOOGLE_FORM_CONFIG.BUSINESS_FIELD]: formData.business,
-        [GOOGLE_FORM_CONFIG.QUESTIONS_FIELD]: JSON.stringify({
-            answers: formData.questions,
-            language: currentLanguage,
-            filesCount: additionalFiles.length,
-            referenceLinks: referenceLinks
-        }),
-        'submit': 'Submit'
-    });
-    
-    try {
-        // إرسال البيانات
-        await fetch(url, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params.toString()
-        });
-        
-        console.log('✅ تم إرسال البيانات لـ Google Form');
-        return true;
-    } catch (error) {
-        console.log('✅ تم إرسال البيانات (CORS متوقع)');
-        return true;
-    }
-}
-
-// اختيار نوع المتجر
 function selectBusiness(type) {
     selectedBusiness = type;
     userAnswers = {};
-    additionalFiles = [];
-    referenceLinks = [];
     
     // إزالة التحديد السابق
     document.querySelectorAll('#businessType > div').forEach(div => {
         div.classList.remove('border-purple-500', 'border-blue-500', 'border-green-500', 'border-red-500', 'shadow-lg', 'scale-[1.02]');
     });
     
+    // إضافة التحديد الجديد
+    const selectedDiv = event.currentTarget;
+    selectedDiv.classList.add(`border-${businessTypes[type].color}-500`, 'shadow-lg', 'scale-[1.02]');
+    
+    // إظهار قسم الأسئلة
+    setTimeout(() => showQuestionsSection(), 300);
+}
+
+function showQuestionsSection() {
+    const business = businessTypes[selectedBusiness];
+    
+    let html = `
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12 animate-fadeIn">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <span class="bg-${business.color}-100 text-${business.color}-700 px-4 py-2 rounded-full font-bold">
+                        ${currentLanguage === 'ar' ? 'الخطوة الثانية' : 'Step 2'}
+                    </span>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-2">
+                        ${currentLanguage === 'ar' ? 'أجب على الأسئلة الأساسية لـ' : 'Answer basic questions for'} ${business.name[currentLanguage]}
+                    </h3>
+                </div>
+                <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-arrow-right ml-2"></i> ${currentLanguage === 'ar' ? 'العودة' : 'Back'}
+                </button>
+            </div>
+            
+            <form id="questionsForm" onsubmit="return showFreePlan(event)">
+    `;
+    
+    business.questions.forEach((q, index) => {
+        html += `
+            <div class="mb-8">
+                <label class="block text-gray-700 font-bold text-lg mb-3">
+                    <span class="bg-gray-100 px-3 py-1 rounded-full mr-2">${index + 1}</span>
+                    ${q.text[currentLanguage]}
+                </label>
+                <textarea 
+                    id="${q.id}"
+                    rows="2"
+                    class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-${business.color}-500 focus:ring-2 focus:ring-${business.color}-200 transition"
+                    placeholder="${q.placeholder[currentLanguage]}"
+                    oninput="saveAnswer('${q.id}', this.value)"
+                    required
+                ></textarea>
+            </div>
+        `;
+    });
+    
+    html += `
+            <div class="text-center mt-12">
+                <button type="submit" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition shadow-lg w-full">
+                    <i class="fas fa-gift ml-2"></i> ${currentLanguage === 'ar' ? 'احصل على بوتك المجاني الآن' : 'Get Your Free Bot Now'}
+                </button>
+                <p class="text-gray-500 mt-4">
+                    ${currentLanguage === 'ar' ? '✓ بوت كامل مجاناً<br>✓ يدعم العربية والإنجليزية' : '✓ Complete bot for free<br>✓ Supports Arabic and English'}
+                </p>
+            </div>
+            </form>
+        </div>
+    `;
+    
+    document.getElementById('questionsSection').innerHTML = html;
+    document.getElementById('questionsSection').classList.remove('hidden');
+    document.getElementById('questionsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveAnswer(id, value) {
+    userAnswers[id] = value;
+}
+
+function goBack() {
+    document.getElementById('questionsSection').classList.add('hidden');
+    document.getElementById('freePlanSection').classList.add('hidden');
+    document.getElementById('successSection').classList.add('hidden');
+}
+
+function showFreePlan(e) {
+    e.preventDefault();
+    
+    const business = businessTypes[selectedBusiness];
+    
+    // التحقق من الإجابات
+    let allAnswered = true;
+    business.questions.forEach(q => {
+        if (!userAnswers[q.id] || userAnswers[q.id].trim() === '') {
+            allAnswered = false;
+        }
+    });
+    
+    if (!allAnswered) {
+        alert(currentLanguage === 'ar' ? '⚠️ الرجاء الإجابة على جميع الأسئلة قبل المتابعة' : '⚠️ Please answer all questions before proceeding');
+        return;
+    }
+    
+    // تحديث ملخص الطلب
+    let summaryHTML = `
+        <div class="space-y-3">
+            <div class="flex justify-between">
+                <span>${currentLanguage === 'ar' ? 'نوع المتجر:' : 'Business Type:'}</span>
+                <span class="font-bold">${business.name[currentLanguage]}</span>
+            </div>
+    `;
+    
+    business.questions.forEach(q => {
+        const answer = userAnswers[q.id];
+        const shortAnswer = answer.length > 50 ? answer.substring(0, 50) + '...' : answer;
+        summaryHTML += `
+            <div class="flex justify-between items-start">
+                <span class="text-gray-600 text-sm">${q.text[currentLanguage]}</span>
+                <span class="text-right font-medium text-sm max-w-xs">${shortAnswer}</span>
+            </div>
+        `;
+    });
+    
+    summaryHTML += `
+            <div class="pt-3 border-t">
+                <div class="flex justify-between text-green-600 font-bold">
+                    <span>${currentLanguage === 'ar' ? 'السعر:' : 'Price:'}</span>
+                    <span>${currentLanguage === 'ar' ? 'مجاناً 🎁' : 'Free 🎁'}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('orderSummary').innerHTML = summaryHTML;
+    document.getElementById('questionsSection').classList.add('hidden');
+    document.getElementById('freePlanSection').classList.remove('hidden');
+    document.getElementById('freePlanSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ================================
+// إرسال البيانات ومعالجة الطلب
+// ================================
+
+document.addEventListener('DOMContentLoaded', function()
