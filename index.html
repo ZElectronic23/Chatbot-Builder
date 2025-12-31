@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot Builder | أنشئ بوت ذكي لموقعك</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .chatbot-preview { box-shadow: 0 20px 60px rgba(0,0,0,0.15); border-radius: 20px; overflow: hidden; }
+        .step-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- الهيدر -->
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-center md:text-right mb-6 md:mb-0">
+                    <h1 class="text-4xl font-bold mb-2">
+                        <i class="fas fa-robot ml-3"></i>ChatBot Builder
+                    </h1>
+                    <p class="text-gray-200 text-lg">أنشئ بوت ذكي لموقعك في 5 دقائق - بدون برمجة</p>
+                </div>
+                <div>
+                    <a href="#start" class="bg-white text-purple-700 px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg">
+                        <i class="fas fa-bolt ml-2"></i>ابدأ الآن مجاناً
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- الخطوات -->
+    <section class="py-16" id="start">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">كيف تعمل المنصة؟</h2>
+                
+                <div class="flex flex-wrap justify-center gap-8 mt-12">
+                    <!-- الخطوة 1 -->
+                    <div class="text-center w-64">
+                        <div class="step-circle bg-purple-100 text-purple-700 text-xl mx-auto mb-4">1</div>
+                        <h3 class="font-bold text-xl mb-3">اختر نوع متجرك</h3>
+                        <p class="text-gray-600">متجر إلكتروني، خدمات، استشارات، أو أي نوع أعمال</p>
+                    </div>
+                    
+                    <!-- الخطوة 2 -->
+                    <div class="text-center w-64">
+                        <div class="step-circle bg-blue-100 text-blue-700 text-xl mx-auto mb-4">2</div>
+                        <h3 class="font-bold text-xl mb-3">أجب على الأسئلة</h3>
+                        <p class="text-gray-600">أسئلة مخصصة لنوع عملك لبناء قاعدة معرفية للبوت</p>
+                    </div>
+                    
+                    <!-- الخطوة 3 -->
+                    <div class="text-center w-64">
+                        <div class="step-circle bg-green-100 text-green-700 text-xl mx-auto mb-4">3</div>
+                        <h3 class="font-bold text-xl mb-3">خذ بوتك الجاهز</h3>
+                        <p class="text-gray-600">ملف HTML جاهز للرفع على موقعك + Google Sheet للمتابعة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- اختيار نوع المتجر -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+                <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">
+                    <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full">الخطوة الأولى</span>
+                    <br class="md:hidden"> اختر نوع متجرك
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="businessType">
+                    <!-- متجر إلكتروني -->
+                    <div class="border-2 border-gray-200 rounded-xl p-6 text-center cursor-pointer transition-all duration-300 hover:border-purple-500 hover:shadow-lg hover:scale-[1.02]" onclick="selectBusiness('ecommerce')">
+                        <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shopping-cart text-3xl text-purple-600"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">متجر إلكتروني</h4>
+                        <p class="text-gray-600 text-sm">لبيع المنتجات أونلاين</p>
+                        <div class="mt-4 text-purple-600 text-xs font-medium">
+                            <i class="fas fa-check-circle ml-1"></i> سياسات شحن
+                            <br><i class="fas fa-check-circle ml-1"></i> طرق دفع
+                            <br><i class="fas fa-check-circle ml-1"></i> إرجاع منتجات
+                        </div>
+                    </div>
+                    
+                    <!-- خدمات -->
+                    <div class="border-2 border-gray-200 rounded-xl p-6 text-center cursor-pointer transition-all duration-300 hover:border-blue-500 hover:shadow-lg hover:scale-[1.02]" onclick="selectBusiness('services')">
+                        <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-concierge-bell text-3xl text-blue-600"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">خدمات</h4>
+                        <p class="text-gray-600 text-sm">عرض الخدمات والمواعيد</p>
+                        <div class="mt-4 text-blue-600 text-xs font-medium">
+                            <i class="fas fa-check-circle ml-1"></i> ساعات عمل
+                            <br><i class="fas fa-check-circle ml-1"></i> حجز مواعيد
+                            <br><i class="fas fa-check-circle ml-1"></i> عرض أسعار
+                        </div>
+                    </div>
+                    
+                    <!-- استشارات -->
+                    <div class="border-2 border-gray-200 rounded-xl p-6 text-center cursor-pointer transition-all duration-300 hover:border-green-500 hover:shadow-lg hover:scale-[1.02]" onclick="selectBusiness('consulting')">
+                        <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-briefcase text-3xl text-green-600"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">استشارات</h4>
+                        <p class="text-gray-600 text-sm">للرد على استفسارات العملاء</p>
+                        <div class="mt-4 text-green-600 text-xs font-medium">
+                            <i class="fas fa-check-circle ml-1"></i> أنواع الاستشارات
+                            <br><i class="fas fa-check-circle ml-1"></i> خبرة واستشاريين
+                            <br><i class="fas fa-check-circle ml-1"></i> أسعار وجدول
+                        </div>
+                    </div>
+                    
+                    <!-- أخرى -->
+                    <div class="border-2 border-gray-200 rounded-xl p-6 text-center cursor-pointer transition-all duration-300 hover:border-red-500 hover:shadow-lg hover:scale-[1.02]" onclick="selectBusiness('other')">
+                        <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-store text-3xl text-red-600"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">أخرى</h4>
+                        <p class="text-gray-600 text-sm">أي نوع أعمال آخر</p>
+                        <div class="mt-4 text-red-600 text-xs font-medium">
+                            <i class="fas fa-check-circle ml-1"></i> أسئلة مخصصة
+                            <br><i class="fas fa-check-circle ml-1"></i> تصميم مرن
+                            <br><i class="fas fa-check-circle ml-1"></i> متوافق مع الجميع
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم الأسئلة (سيظهر بعد الاختيار) -->
+            <div id="questionsSection" class="hidden">
+                <!-- هنا تظهر الأسئلة الديناميكية -->
+            </div>
+
+            <!-- قسم المعاينة (سيظهر بعد الإجابة) -->
+            <div id="previewSection" class="hidden">
+                <!-- هنا تظهر المعاينة -->
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold mb-6">ChatBot Builder</h3>
+            <p class="text-gray-400 mb-8">أول منصة عربية لإنشاء شات بوتات ذكية للمتاجر والشركات</p>
+            <div class="flex justify-center space-x-6 space-x-reverse">
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <p class="mt-8 text-gray-500 text-sm">© 2024 ChatBot Builder. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // الكود JavaScript هنا
+    </script>
+</body>
+</html>
